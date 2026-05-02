@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/amanraj333/ecommerce-app.git'
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                bat """
+                xcopy /E /I /Y * "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\ecommerce\\"
+                """
+            }
+        }
+
+        stage('Restart Tomcat') {
+            steps {
+                bat """
+                "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\bin\\shutdown.bat"
+                timeout /t 5
+                "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\bin\\startup.bat"
+                """
+            }
+        }
+    }
+}
